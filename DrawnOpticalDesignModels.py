@@ -190,8 +190,6 @@ def Hexagonal(ax,plot_circle=False,colorhexag =False,colorcircle =False, lshexag
             plt.gca().add_patch(circle)
     
     plt.scatter(0,0,s=1,color="black")
-    plt.axhline(y=0,color="blue",linestyle=":",lw=5)
-    plt.axvline(x=0,color="blue",linestyle=":",lw=5)
     ax.set_xlabel('y (cm)' , fontsize=20)
     ax.set_ylabel('x (cm)' , fontsize=20)
     ax.tick_params(axis='both', which='major', labelsize=20)
