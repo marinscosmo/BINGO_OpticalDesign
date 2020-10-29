@@ -59,55 +59,6 @@ def parameters(design="DR"):
     else:
         raise NameError
         
-def vertices(Center, params, edge="external"):# Q eh o ponto central do hexagono estudado
-    if edge=="external":
-        V1 = Center+np.array([ -params['B']/2,-params['DV']/2])
-        V2 = Center+np.array([-params['DH']/2,             +0])
-        V3 = Center+np.array([ -params['B']/2,+params['DV']/2])
-        V4 = Center+np.array([ +params['B']/2,+params['DV']/2])
-        V5 = Center+np.array([+params['DH']/2,             +0])
-        V6 = Center+np.array([ +params['B']/2,-params['DV']/2])
-    elif edge=="internal":
-        V1 = Center+np.array([ -params['b']/2,-params['dv']/2])
-        V2 = Center+np.array([-params['dh']/2,             +0])
-        V3 = Center+np.array([ -params['b']/2,+params['dv']/2])
-        V4 = Center+np.array([ +params['b']/2,+params['dv']/2])
-        V5 = Center+np.array([+params['dh']/2,             +0])
-        V6 = Center+np.array([ +params['b']/2,-params['dv']/2])
-
-    return np.array([V1,V2,V3,V4,V5,V6])
-
-def drawHexag(PC,params=None, Np=0,dd=21,colorhexag ="red",colorcircle ="red",plot_circle=True, lshexag="-", lscircle="-"):#PC = Ponto Central. De o ponto central e eh retornado o hexagonoBINGO
-
-    fillhexag  = False
-    fillcircle = False
-    if not colorhexag:
-        colorhexag ="red"
-    else:
-        fillhexag  = True
-    if not colorcircle:
-        colorcircle ="red"
-    else:
-        fillcircle  = True
-        
-    for pc in PC:
-        Pc=vertices(pc,params,edge="external")
-        hexa = plt.Polygon(Pc, fill=fillhexag, edgecolor='black',facecolor=colorhexag,ls=lshexag)
-        plt.gca().add_patch(hexa)
-        Pc=vertices(pc,params,edge="internal")
-        hexa = plt.Polygon(Pc, fill=fillhexag, edgecolor='black',facecolor=colorhexag,ls=lshexag)
-        plt.gca().add_patch(hexa)        
-        if plot_circle:
-            for np_ in range(Np+1):
-                if np==0:
-                    circle = plt.Circle((pc[0], pc[1]+np_*dd), radius=params["horn diam"]/2.,fill=fillcircle, facecolor=colorcircle,ls=lscircle)
-                    plt.gca().add_patch(circle)
-                else:
-                    circle = plt.Circle((pc[0], pc[1]+np_*dd), radius=params["horn diam"]/2.,fill=fillcircle, facecolor=colorcircle,ls=lscircle)
-                    plt.gca().add_patch(circle)
-                    circle = plt.Circle((pc[0], pc[1]-np_*dd), radius=params["horn diam"]/2.,fill=fillcircle, facecolor=colorcircle,ls=lscircle)
-                    plt.gca().add_patch(circle)        
-                    
                     
 def PCcolfeeds(PCHref,params,nup,ndown):#PCref = Central Point of the reference hexagon, nsup = feeds above of the reference, ndown = feeds bellow of the reference
                                         #Function will return central horn of the column
@@ -131,11 +82,12 @@ def AdditionHorns(colhorns=None, params=None, up=False, down=False , type_="dash
 
 def DisplacementHorns(col, Np=1., displacement=15.):
 	newx = []
-	for c in col["x"]:
+	newy = []
+	for i,c in enumerate(col["x"]):
 		for j in np.arange(-Np,Np+1,1):
 			c0 = c - j*displacement
 			newx = np.hstack((newx,c0))
-	newy = col['y'][0]*np.ones(len(newx))
+			newy = np.hstack((newy,col['y'][i]))
 	return {"x":newx,"y":newy}
 	
 
@@ -162,7 +114,7 @@ def Rectangular(shiftx=0,shifty=30., Np=0, displacement=15.):
     
     return pd.DataFrame({"col1":col1,"col2":col2,"col3":col3,"col4":col4,"col5":col5})
 
-def DoubleRectangular(shiftx=0,shifty=30., Np=0, displacement=15.,including_addition_horns=True):
+def DoubleRectangular(shiftx=0,shifty=30., Np=0, displacement=15.,including_add_horns=True):
     params = parameters("DR")
     
     shift  = 0      + np.array([                       shiftx,          shifty]) 
@@ -172,7 +124,7 @@ def DoubleRectangular(shiftx=0,shifty=30., Np=0, displacement=15.,including_addi
     Tshift = Pshift + np.array([-1*(params['DH']+params['B'])/2,-params['DV']/2])
     Ushift = Qshift + np.array([ 1*(params['DH']+params['B'])/2,-params['DV']/2])
     
-    if including_addition_horns:
+    if including_add_horns:
         Col1 = PCcolfeeds(Tshift,params=params,nup=2,ndown=3+2)
         Col2 = PCcolfeeds(Pshift,params=params,nup=1,ndown=3+3)
         Col3 = PCcolfeeds(Qshift,params=params,nup=1,ndown=3+3)
