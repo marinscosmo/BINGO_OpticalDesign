@@ -66,12 +66,16 @@ def fitting_theta(X_, a, b, c, d, e,f,g,h,i,j,k,l,m,n):
 def fitting_phi(X_,a,b,c,d,e,f,g,h,i,j,k,l,m,n):
     return a + b*X_[0] + c*X_[1] + d*X_[0]*X_[1]  + e*X_[0]**2 + f*X_[1]**2  + g*(X_[0]**2)*X_[1] + h*X_[0]*X_[1]**2 + i*X_[0]**3 + j*X_[1]**3 + k*X_[0]**4 + l*X_[1]**4 + m/(X_[0] + 0.00001) + n/(X_[1] + 0.00001)
 
+def fitting_I(X_,a,b,c,d,e,f,g,h,i,j,k,l,m,n):
+    return a + b*X_[0] + c*X_[1] + d*X_[0]*X_[1]  + e*X_[0]**2 + f*X_[1]**2  + g*(X_[0]**2)*X_[1] + h*X_[0]*X_[1]**2 + i*X_[0]**3 + j*X_[1]**3 + k*X_[0]**4 + l*X_[1]**4 + m/(X_[0] + 0.00001) + n/(X_[1] + 0.00001)
+
 
 def fitting_parameters_std_values():
-	cte_phi   = np.array([ 8.97870969e+01,  2.18345516e-01, -4.82762097e-08, -5.29898996e-11,  4.52465952e-05, -2.31915250e-05,	6.06778735e-14, -1.94152087e-07, -3.07097833e-07,  1.91585076e-13, -2.29281473e-10, -2.55851837e-11, -9.14543501e-04,  1.66724564e-05])
-	cte_z     = np.array([ 1.09691186e+00, -4.81432066e-02, -1.37879361e-08,  1.49428782e-10,  2.05169768e-04,  7.59745004e-05, 3.83307490e-13,  1.97193057e-07,  3.86247340e-08, -8.43638267e-14, -1.08155705e-10,  5.41413911e-11,  5.21249391e-05, -6.30940319e-05])
-	cte_theta = np.array([ 1.60791973e+00, -2.42180634e-03, -2.58242316e-08, -8.12084759e-11,  9.74693839e-06,  9.57415916e-06,-1.38957293e-13,  4.81071426e-09,  2.06847990e-09,  1.00047361e-13, -2.79036573e-12, -4.10120869e-12, -1.41613897e-05, -1.91784061e-06])
-	return pd.DataFrame({"z":cte_z,"theta":cte_theta,"phi":cte_phi})
+	cte_phi   = np.array([   8.97870969e+01,        2.18345516e-01,         -4.82762097e-08,         -5.29898996e-11,          4.52465952e-05,         -2.31915250e-05,	         6.06778735e-14,      -1.94152087e-07,         -3.07097833e-07,          1.91585076e-13,         -2.29281473e-10,         -2.55851837e-11,         -9.14543501e-04,          1.66724564e-05])
+	cte_z     = np.array([   1.09691186e+00,       -4.81432066e-02,         -1.37879361e-08,          1.49428782e-10,          2.05169768e-04,          7.59745004e-05,          3.83307490e-13,       1.97193057e-07,          3.86247340e-08,         -8.43638267e-14,         -1.08155705e-10,          5.41413911e-11,          5.21249391e-05,         -6.30940319e-05])
+	cte_theta = np.array([   1.60791973e+00,       -2.42180634e-03,         -2.58242316e-08,         -8.12084759e-11,          9.74693839e-06,          9.57415916e-06,         -1.38957293e-13,       4.81071426e-09,          2.06847990e-09,          1.00047361e-13,         -2.79036573e-12,         -4.10120869e-12,         -1.41613897e-05,         -1.91784061e-06])
+	cte_I     = np.array([ 51.5446046970247, 2.474079535236063e-05,  -6.411313653645429e-10,  -1.326892811719943e-12,  -8.952790427856754e-07,  -8.974903926209115e-07,  -1.446576283442337e-15, 7.96053971753076e-12,  1.4997103574671965e-10,   2.024866433950247e-15,  1.4303838058422261e-13,  1.0763324830359558e-12,   9.876324262113821e-07, -2.8449396027491013e-08])
+	return pd.DataFrame({"z":cte_z,"theta":cte_theta,"phi":cte_phi,"I":cte_I})
 	
     
 def fit_parameters(X=None,Y=None, calculated=False):
@@ -90,6 +94,7 @@ def fit_parameters(X=None,Y=None, calculated=False):
 		Z     = scipy.array(param.z,    dtype=float)
 		THETA = scipy.array(param.theta,dtype=float)
 		PHI   = scipy.array(param.phi,  dtype=float)
+		I     = scipy.array(param.I,    dtype=float)
 		XY    = scipy.array([XX,YY])
 		del param
 		PHI   = np.absolute(PHI)
@@ -98,8 +103,8 @@ def fit_parameters(X=None,Y=None, calculated=False):
 		cte_z,     cov_z     = curve_fit(fitting_z,     XY, Z)
 		cte_theta, cov_theta = curve_fit(fitting_theta, XY, THETA)
 		cte_phi,   cov_phi   = curve_fit(fitting_phi,   XY, PHI)
-		
-		cte = pd.DataFrame({"z":cte_z,"theta":cte_theta,"phi":cte_phi})
+		cte_I,     cov_I     = curve_fit(fitting_I,     XY, I)
+		cte = pd.DataFrame({"z":cte_z,"theta":cte_theta,"phi":cte_phi,"I":cte_I})
 	else:
 		cte = fitting_parameters_std_values()
 
@@ -108,6 +113,7 @@ def fit_parameters(X=None,Y=None, calculated=False):
 	Zfit = fitting_z(    XY,*cte.z)
 	Tfit = fitting_theta(XY,*cte.theta)
 	Pfit = fitting_phi(  XY,*cte.phi)
+	Ifit = fitting_I(    XY,*cte.I)
 
 	#Correct Y values
 	indp = np.where(Y>=0.)
@@ -115,4 +121,4 @@ def fit_parameters(X=None,Y=None, calculated=False):
 	Pfit[indp]=-np.absolute(Pfit[indp])
 	Pfit[indn]=+np.absolute(Pfit[indn])
 	
-	return pd.DataFrame({"x":X,"y":Y,"z":Zfit,"theta":Tfit,"phi":Pfit})
+	return pd.DataFrame({"x":X,"y":Y,"z":Zfit,"theta":Tfit,"phi":Pfit,"I":Ifit})
