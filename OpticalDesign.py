@@ -116,8 +116,8 @@ def fit_parameters(X=None,Y=None, calculated=False):
 	Ifit = fitting_I(    XY,*cte.I)
 
 	#Correct Y values
-	indp = np.where(Y>=0.)
-	indn = np.where(Y<0.)
+	indp = np.where(Y>0.)
+	indn = np.where(Y<=0.)
 	Pfit[indp]=-np.absolute(Pfit[indp])
 	Pfit[indn]=+np.absolute(Pfit[indn])
 	
