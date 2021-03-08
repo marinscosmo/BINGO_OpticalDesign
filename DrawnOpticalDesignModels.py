@@ -102,16 +102,15 @@ def DoubleRectangular(ax, shiftx=0,shifty=30., Np=0, displacement=15.,
             colorhexag1    = False,colorhexag2     = False, lshexag      ="-",
             colorcircle1   = False,colorcircle2    = False, lscircle     ="-",
             colorhexag_add = False,colorcircle_add = False, lshexag_add  ="--", lscircle_add ="--"):
-    
-    params = MODEL.parameters("DR")
-    
-    datas  = MODEL.DoubleRectangular(shiftx,shifty, Np, displacement, including_add_horns=including_add_horns)
-    drawHexag(datas.col1, params, Np, displacement, colorhexag1, colorcircle1, plot_circle, lshexag, lscircle)
-    drawHexag(datas.col2, params, Np, displacement, colorhexag1, colorcircle1, plot_circle, lshexag, lscircle)
-    drawHexag(datas.col3, params, Np, displacement, colorhexag2, colorcircle2, plot_circle, lshexag, lscircle)
-    drawHexag(datas.col4, params, Np, displacement, colorhexag2, colorcircle2, plot_circle, lshexag, lscircle)
-    
-    if including_add_horns:
+	params = MODEL.parameters("DR")
+	
+	datas  = MODEL.DoubleRectangular(shiftx,shifty, Np, displacement, including_add_horns=including_add_horns)
+	drawHexag(datas.col1, params, Np, displacement, colorhexag1, colorcircle1, plot_circle, lshexag, lscircle)
+	drawHexag(datas.col2, params, Np, displacement, colorhexag1, colorcircle1, plot_circle, lshexag, lscircle)
+	drawHexag(datas.col3, params, Np, displacement, colorhexag2, colorcircle2, plot_circle, lshexag, lscircle)
+	drawHexag(datas.col4, params, Np, displacement, colorhexag2, colorcircle2, plot_circle, lshexag, lscircle)
+	
+	if including_add_horns:
 		X = []
 		Y = []
 		for j in [1,2,3,4]:
@@ -122,16 +121,13 @@ def DoubleRectangular(ax, shiftx=0,shifty=30., Np=0, displacement=15.,
 		add = MODEL.DisplacementHorns({"x": X,"y":Y}, Np=Np, displacement=displacement)
 		add = pd.DataFrame(add)
 		drawHexag(add, params, Np, displacement, colorhexag_add, colorcircle_add, plot_circle, lshexag_add, lscircle_add )
-
-    plt.scatter(  0, 0, s=1,color="black")
-    ax.set_xlabel('y (cm)' , fontsize=20)
-    ax.set_ylabel('x (cm)' , fontsize=20)
-    ax.tick_params(axis='both', which='major', labelsize=20)
-    ax.tick_params(axis='both', which='minor', labelsize=18)
-    plt.gca().invert_yaxis()
-    plt.grid(True)
-
-
+	plt.scatter(  0, 0, s=1,color="black")
+	ax.set_xlabel('y (cm)' , fontsize=20)
+	ax.set_ylabel('x (cm)' , fontsize=20)
+	ax.tick_params(axis='both', which='major', labelsize=20)
+	ax.tick_params(axis='both', which='minor', labelsize=18)
+	plt.gca().invert_yaxis()
+	plt.grid(True)
 
 def TripleRectangular(ax, shiftx=+131.25375, shifty=0., Np=0, displacement=15., 
             plot_circle=False,

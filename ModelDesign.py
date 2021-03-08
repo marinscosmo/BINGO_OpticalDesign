@@ -114,32 +114,29 @@ def Rectangular(shiftx=0,shifty=30., Np=0, displacement=15.):
     
     return pd.DataFrame({"col1":col1,"col2":col2,"col3":col3,"col4":col4,"col5":col5})
 
-def DoubleRectangular(shiftx=0,shifty=30., Np=0, displacement=15.,including_add_horns=True):
-    params = parameters("DR")
-    
-    shift  = 0      + np.array([                       shiftx,          shifty]) 
-    P      = 0      + np.array([              -params['DH']/2, +params['DV']/2]) + shift
-    Pshift = P      + np.array([              +params[ 'x']/4,            -0/1])
-    Qshift = np.array([-Pshift[0],Pshift[1]]) + np.array([0,-params['DV']/4])   
-    Tshift = Pshift + np.array([-1*(params['DH']+params['B'])/2,-params['DV']/2])
-    Ushift = Qshift + np.array([ 1*(params['DH']+params['B'])/2,-params['DV']/2])
-    
-    if including_add_horns:
-        Col1 = PCcolfeeds(Tshift,params=params,nup=2,ndown=3+2)
-        Col2 = PCcolfeeds(Pshift,params=params,nup=1,ndown=3+3)
-        Col3 = PCcolfeeds(Qshift,params=params,nup=1,ndown=3+3)
-        Col4 = PCcolfeeds(Ushift,params=params,nup=2,ndown=3+2)
-    else:
+def DoubleRectangular(shiftx=0,shifty=30., Np=0, displacement=15.,including_add_horns=False):
+	params = parameters("DR")
+	shift  = 0      + np.array([                       shiftx,          shifty]) 
+	P      = 0      + np.array([              -params['DH']/2, +params['DV']/2]) + shift
+	Pshift = P      + np.array([              +params[ 'x']/4,            -0/1])
+	Qshift = np.array([-Pshift[0],Pshift[1]]) + np.array([0,-params['DV']/4])   
+	Tshift = Pshift + np.array([-1*(params['DH']+params['B'])/2,-params['DV']/2])
+	Ushift = Qshift + np.array([ 1*(params['DH']+params['B'])/2,-params['DV']/2])
+	if including_add_horns:
+		Col1 = PCcolfeeds(Tshift,params=params,nup=2,ndown=3+2)
+		Col2 = PCcolfeeds(Pshift,params=params,nup=1,ndown=3+3)
+		Col3 = PCcolfeeds(Qshift,params=params,nup=1,ndown=3+3)
+		Col4 = PCcolfeeds(Ushift,params=params,nup=2,ndown=3+2)
+	else:
 		Col1 = PCcolfeeds(Tshift,params=params,nup=2,ndown=3+1)
 		Col2 = PCcolfeeds(Pshift,params=params,nup=1,ndown=3+2)
 		Col3 = PCcolfeeds(Qshift,params=params,nup=1,ndown=3+2)
 		Col4 = PCcolfeeds(Ushift,params=params,nup=2,ndown=3+1)
-    
-    col1 = DisplacementHorns({"x": Col1.T[1],"y":Col1.T[0]}, Np=Np, displacement=displacement)
-    col2 = DisplacementHorns({"x": Col2.T[1],"y":Col2.T[0]}, Np=Np, displacement=displacement)
-    col3 = DisplacementHorns({"x": Col3.T[1],"y":Col3.T[0]}, Np=Np, displacement=displacement)
-    col4 = DisplacementHorns({"x": Col4.T[1],"y":Col4.T[0]}, Np=Np, displacement=displacement)
-    return pd.DataFrame({"col1":col1,"col2":col2,"col3":col3,"col4":col4})            
+	col1 = DisplacementHorns({"x": Col1.T[1],"y":Col1.T[0]}, Np=Np, displacement=displacement)
+	col2 = DisplacementHorns({"x": Col2.T[1],"y":Col2.T[0]}, Np=Np, displacement=displacement)
+	col3 = DisplacementHorns({"x": Col3.T[1],"y":Col3.T[0]}, Np=Np, displacement=displacement)
+	col4 = DisplacementHorns({"x": Col4.T[1],"y":Col4.T[0]}, Np=Np, displacement=displacement)
+	return pd.DataFrame({"col1":col1,"col2":col2,"col3":col3,"col4":col4})            
 
     
 def TripleRectangular(shiftx=+131.25375, shifty=0., Np=0, displacement=15.):
